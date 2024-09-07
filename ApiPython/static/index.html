@@ -1,0 +1,49 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Notificación</title>
+</head>
+
+<body>
+    <h1>Enviar Notificación</h1>
+    <form id="notificationForm">
+        <label for="token">Token del Dispositivo:</label>
+        <input type="text" id="token" name="token" required><br><br>
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required><br><br>
+        <label for="body">Mensaje:</label>
+        <textarea id="body" name="body" required></textarea><br><br>
+        <button type="button" onclick="sendNotification()">Enviar Notificación</button>
+    </form>
+    <script>
+        async function sendNotification() {
+            const form = document.getElementById('notificationForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch('/send_notification/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Notificación enviada con éxito. ID: ' + result.message_id);
+                } else {
+                    alert('Error al enviar notificación: ' + result.detail);
+                }
+            } catch (error) {
+                alert('Error al enviar notificación: ' + error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>
